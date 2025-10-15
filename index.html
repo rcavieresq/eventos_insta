@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Panoramas</title>
+
+  <link rel="icon" href="images/logo.png" type="image/png">
+  <link rel="shortcut icon" href="images/logo.png" type="image/png">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --sand: #f6efe6;
+      --sea: #bfeaf5;
+      --accent: #ff7b6b;
+      --muted: #5f7d83;
+      --card: rgba(255,255,255,0.88);
+    }
+
+    /* --- Mantener tu estilo original --- */
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background-image: url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: black;
+      text-shadow: 0 1px 4px rgba(255,255,255,0.7);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(5px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    h1 {
+      font-size: 2.6em;
+      color: black;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    p.subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-style: italic;
+    }
+
+    .controls {
+      padding: 12px 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .input, .btn, .select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(20,60,70,0.08);
+      background: rgba(255,255,255,0.95);
+      font-family: inherit;
+    }
+
+    .input {
+      min-width: 220px;
+      flex: 1;
+    }
+
+    .btn {
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--sea), #fff);
+      border: none;
+    }
+
+    main {
+      padding: 18px 24px 100px;
+    }
+
+    .filters {
+      padding: 8px 24px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .filter {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(20,60,70,0.08);
+      background: rgba(255,255,255,0.9);
+      min-width: 260px;
+    }
+
+    .order-btn {
+      position: relative;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(20,60,70,0.08);
+      background: rgba(255,255,255,0.95);
+      cursor: pointer;
+    }
+
+    .order-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+      z-index: 50;
+      text-align: left;
+    }
+
+    .order-dropdown button {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    
+    .order-dropdown button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transition: transform .18s ease, box-shadow .18s ease;
+      position: relative;
+      text-align: left;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+    }
+
+    .card .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .card h3.title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: bold;
+    }
+
+    .card .dates {
+      margin: 6px 0;
+      color: #37474f;
+      font-size: 0.95rem;
+    }
+
+    .card .info {
+      margin: 8px 0;
+      color: #222;
+      font-size: 0.95rem;
+    }
+
+    .delete-btn, .edit-btn {
+      position: absolute;
+      top: 10px;
+      padding: 4px 8px;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .delete-btn {
+      right: 10px;
+      background: var(--accent);
+    }
+
+    .edit-btn {
+      right: 80px;
+      background: var(--muted);
+    }
+
+    .empty {
+      padding: 48px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    footer {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+    }
+
+    .fab {
+      background: var(--accent);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(255,123,107,0.18);
+      border: none;
+      cursor: pointer;
+    }
+
+    blockquote.instagram-media {
+      width: 100% !important;
+    }
+
+    /* --- Modal (edición) --- */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      z-index: 60;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-box {
+      width: 90%;
+      max-width: 920px;
+      background: rgba(255,255,255,0.98);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      gap: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      font-family: inherit;
+    }
+
+    .modal-left, .modal-right {
+      padding: 16px;
+    }
+
+    .modal-left {
+      width: 44%;
+      background: #fafafa;
+      border-right: 1px solid rgba(0,0,0,0.03);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .modal-left .preview {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .modal-right {
+      width: 56%;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .modal-close {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
+      background: transparent;
+      border: none;
+    }
+
+    .modal-right label {
+      font-size: 0.85rem;
+      color: #333;
+      margin-bottom: 4px;
+      display: block;
+      text-align: left;
+    }
+
+    .modal-right input[type="text"], .modal-right input[type="date"], .modal-right textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid rgba(20,60,70,0.08);
+      border-radius: 8px;
+      font-family: inherit;
+      background: white;
+      box-sizing: border-box;
+    }
+
+    .modal-actions {
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      margin-top:8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--sea), #fff);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(20,60,70,0.08);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 800px) {
+      .modal-box { flex-direction: column; max-width: 92%; }
+      .modal-left, .modal-right { width: 100%; box-sizing: border-box; }
+      .edit-btn { right: 10px; top: 46px; }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <img class="logo" src="images/logo.png" alt="Logo">
+    <div style="text-align:left;">
+      <h1 style="margin:0; font-size:2em;">Eventos por asistir</h1>
+      <p class="subtitle" style="margin:2px 0 0;">Un diario visual de mis panoramas 🌴✨</p>
+    </div>
+  </header>
+
+  <section class="controls">
+    <input id="igUrl" class="input" placeholder="Pega el link de una publicación de Instagram">
+    <input id="titleInput" class="input" placeholder="Título corto (ej. Festival de verano)">
+    <input id="dateStartInput" class="input" type="date" title="Fecha de inicio">
+    <input id="dateEndInput" class="input" type="date" title="Fecha de término">
+    <input id="infoInput" class="input" placeholder="Descripción breve o nota">
+    <button id="addBtn" class="btn">Agregar</button>
+  </section>
+
+  <section class="filters">
+    <input id="searchInput" class="filter" placeholder="Buscar (por defecto: título) — escribe y filtra en vivo">
+    
+    <select id="searchField" class="select" title="Campo de búsqueda">
+      <option value="title" selected>Título</option>
+      <option value="date_start">Fecha inicio</option>
+      <option value="info">Info</option>
+    </select>
+
+    <div style="position:relative;">
+      <div class="order-btn" id="orderBtn">Ordenar ▾</div>
+      <div class="order-dropdown" id="orderDropdown">
+        <button data-order="title_asc">Título A→Z</button>
+        <button data-order="title_desc">Título Z→A</button>
+        <button data-order="date_asc">Fechas más próximas</button>
+        <button data-order="date_desc">Fechas más lejanas</button>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty">Pega un enlace de Instagram arriba y presiona "Agregar" para empezar.</div>
+  </main>
+
+  <footer>
+    <button class="fab" id="themeBtn">Cambiar vibra</button>
+  </footer>
+
+  <script async defer src="https://www.instagram.com/embed.js"></script>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwipDCJIlvvpWlFeqfeuaGgCvoOuC8vTHUAkZxsVHZgaPcrV-qljHzap44Sbrc4Ckn7MA/exec"; // <-- reemplaza con tu /exec
+
+    // DOM
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const addBtn = document.getElementById('addBtn');
+    const igUrlInput = document.getElementById('igUrl');
+    const titleInput = document.getElementById('titleInput');
+    const dateStartInput = document.getElementById('dateStartInput');
+    const dateEndInput = document.getElementById('dateEndInput');
+    const infoInput = document.getElementById('infoInput');
+
+    const searchInput = document.getElementById('searchInput');
+    const searchField = document.getElementById('searchField');
+    const orderBtn = document.getElementById('orderBtn');
+    const orderDropdown = document.getElementById('orderDropdown');
+
+    // Modal elements
+    let modal, modalBox, modalLeft, modalRight;
+    initModal();
+
+    let posts = []; // datos cargados desde el Sheet
+    let currentOrder = 'date_asc'; // Orden por defecto
+
+    function formatDate(dateStr) {
+      if(!dateStr) return "";
+      const d = new Date(dateStr);
+      const day = String(d.getDate()).padStart(2,'0');
+      const month = String(d.getMonth()+1).padStart(2,'0');
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
+    }
+    
+    // ---------- Fetch posts ----------
+    async function fetchPosts() {
+      try {
+        const res = await fetch(API_URL);
+        let data = await res.json();
+
+        // normalizar nombres de campos por si vienen con headers diferentes
+        posts = data.map(p => ({
+          uuid: p.uuid || p.id || '', // <-- LEER UUID
+          link: p.link || p.permalink || p.Link || p.permalink_url || '',
+          title: p.title || '',
+          date_start: p.date_start || p.dates || p.dateStart || '',
+          date_end: p.date_end || p.date_end || p.dateEnd || '',
+          info: p.info || ''
+        }));
+
+        applyFiltersAndRender();
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        empty.textContent = 'Error al cargar los datos. Revisa la consola para más detalles.'
+      }
+    }
+
+    // ---------- Add post ----------
+    addBtn.addEventListener('click', async () => {
+      const uuid = crypto.randomUUID(); // <-- GENERAR UUID
+      const link = igUrlInput.value.trim();
+      const title = titleInput.value.trim();
+      const date_start = dateStartInput.value;
+      const date_end = dateEndInput.value;
+      const info = infoInput.value.trim();
+      
+      if (!link) return alert("Ingresa un enlace de Instagram");
+
+      await fetch(API_URL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "add",
+          uuid: uuid, // <-- ENVIAR UUID
+          link: String(link),
+          title: String(title),
+          date_start: String(date_start),
+          date_end: String(date_end),
+          info: String(info)
+        })
+      });
+
+      // limpiar formulario
+      igUrlInput.value = '';
+      titleInput.value = '';
+      dateStartInput.value = '';
+      dateEndInput.value = '';
+      infoInput.value = '';
+
+      await fetchPosts();
+    });
+
+    // ---------- Delete ----------
+    async function deletePost(uuid) {
+      if (!confirm("¿Eliminar este post?")) return;
+      await fetch(API_URL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "delete", uuid: uuid }) // <-- USAR UUID
+      });
+      await fetchPosts();
+    }
+
+    // ---------- Edit (abre modal) ----------
+    function openEditModal(post) {
+      modal.dataset.uuid = post.uuid; // <-- GUARDAR UUID EN EL MODAL
+
+      function formatDateForInput(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        if (isNaN(date)) return "";
+        // Ajuste de zona horaria
+        const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return local.toISOString().split("T")[0];
+      }
+
+      modalLeft.innerHTML = `
+        <div class="preview">
+          <blockquote class="instagram-media" data-instgrm-permalink="${post.link}" data-instgrm-version="14"></blockquote>
+          <p style="font-size:0.85rem;color:#333;margin-top:8px;word-break:break-all;">${post.link}</p>
+        </div>
+      `;
+
+      modalRight.querySelector('#m_title').value = post.title || '';
+      modalRight.querySelector('#m_date_start').value = formatDateForInput(post.date_start);
+      modalRight.querySelector('#m_date_end').value = formatDateForInput(post.date_end);
+      modalRight.querySelector('#m_info').value = post.info || '';
+      
+      modal.classList.add('show');
+      setTimeout(() => {
+        if (window.instgrm) window.instgrm.Embeds.process();
+      }, 300);
+    }
+
+    function initModal(){
+      modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-box" role="dialog" aria-modal="true">
+          <div class="modal-left"><div class="preview"></div></div>
+          <div class="modal-right">
+            <button class="modal-close" title="Cerrar">&times;</button>
+            <div>
+              <label for="m_title">Título</label>
+              <input id="m_title" type="text" />
+            </div>
+            <div>
+              <label for="m_date_start">Fecha inicio</label>
+              <input id="m_date_start" type="date" />
+            </div>
+            <div>
+              <label for="m_date_end">Fecha término</label>
+              <input id="m_date_end" type="date" />
+            </div>
+            <div>
+              <label for="m_info">Información</label>
+              <textarea id="m_info" rows="4"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button class="btn-secondary" id="cancelEdit">Cancelar</button>
+              <button class="btn-primary" id="saveEdit">Guardar</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      modalBox = modal.querySelector('.modal-box');
+      modalLeft = modal.querySelector('.modal-left');
+      modalRight = modal.querySelector('.modal-right');
+
+      // handlers
+      modal.querySelector('.modal-close').addEventListener('click', () => modal.classList.remove('show'));
+      modal.querySelector('#cancelEdit').addEventListener('click', () => modal.classList.remove('show'));
+      
+      modal.querySelector('#saveEdit').addEventListener('click', async () => {
+        const uuid = modal.dataset.uuid; // <-- OBTENER UUID
+        if(!uuid) return;
+
+        const newTitle = modalRight.querySelector('#m_title').value.trim();
+        const newDateStart = modalRight.querySelector('#m_date_start').value;
+        let newDateEnd = modalRight.querySelector('#m_date_end').value;
+        const newInfo = modalRight.querySelector('#m_info').value.trim();
+
+        if (newDateStart && !newDateEnd) {
+            newDateEnd = newDateStart;
+        }
+
+        const payload = {
+            action: "update",
+            uuid: uuid, // <-- ENVIAR UUID
+            title: newTitle,
+            date_start: newDateStart,
+            date_end: newDateEnd,
+            info: newInfo
+        };
+        console.log(payload);
+
+        await fetch(API_URL, {
+          method: "POST",
+          body: new URLSearchParams(payload)
+        });
+
+        modal.classList.remove('show');
+        await fetchPosts();
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('show');
+      });
+    }
+
+    // ---------- Render y filtros ----------
+    function renderPosts(list) {
+      grid.innerHTML = '';
+      if (!list || list.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      list.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.uuid = post.uuid; // <-- GUARDAR UUID EN LA TARJETA
+
+        const titleHTML = `<div class="title-row"><h3 class="title">${escapeHtml(post.title || 'Sin título')}</h3></div>`;
+        const datesHTML = `<div class="dates">${formatDate(post.date_start) ? escapeHtml(formatDate(post.date_start)) : '—'} ${formatDate(post.date_end) && formatDate(post.date_end) !== formatDate(post.date_start) ? ' | ' + escapeHtml(formatDate(post.date_end)) : ''}</div>`;
+        const infoHTML = `<div class="info">${escapeHtml(post.info || '')}</div>`;
+        const previewHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${post.link}" data-instgrm-version="14"></blockquote>`;
+
+        card.innerHTML = `
+          ${titleHTML}
+          ${datesHTML}
+          ${previewHTML}
+          ${infoHTML}
+          <button class="edit-btn" title="Editar">Editar</button>
+          <button class="delete-btn" title="Eliminar">Eliminar</button>
+        `;
+
+        // eventos
+        card.querySelector('.delete-btn').addEventListener('click', () => deletePost(post.uuid)); // <-- USAR UUID
+        card.querySelector('.edit-btn').addEventListener('click', () => openEditModal(post)); // post completo tiene el uuid
+
+        grid.appendChild(card);
+      });
+
+      setTimeout(()=> { if(window.instgrm) window.instgrm.Embeds.process(); }, 300);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function applyFiltersAndRender() {
+      const q = (searchInput.value || '').toLowerCase().trim();
+      const field = searchField.value || 'title';
+
+      let filtered = posts.filter(p => {
+        const target = (p[field] || '').toLowerCase();
+        return target.includes(q);
+      });
+
+      if (currentOrder) {
+        if (currentOrder === 'title_asc') {
+          filtered.sort((a,b) => (a.title||'').localeCompare(b.title||''));
+        } else if (currentOrder === 'title_desc') {
+          filtered.sort((a,b) => (b.title||'').localeCompare(a.title||''));
+        } else if (currentOrder === 'date_asc') {
+          filtered.sort((a,b) => (a.date_start || '').localeCompare(b.date_start || ''));
+        } else if (currentOrder === 'date_desc') {
+          filtered.sort((a,b) => (b.date_start || '').localeCompare(a.date_start || ''));
+        }
+      }
+
+      renderPosts(filtered);
+    }
+
+    // Live search
+    searchInput.addEventListener('input', () => applyFiltersAndRender());
+    searchField.addEventListener('change', () => applyFiltersAndRender());
+
+    // Order dropdown toggle
+    orderBtn.addEventListener('click', () => {
+      orderDropdown.style.display = orderDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    orderDropdown.addEventListener('click', (e) => {
+      if (e.target.tagName.toLowerCase() === 'button') {
+        currentOrder = e.target.dataset.order;
+        orderDropdown.style.display = 'none';
+        applyFiltersAndRender();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!orderBtn.contains(e.target) && !orderDropdown.contains(e.target)) {
+        orderDropdown.style.display = 'none';
+      }
+    });
+    
+    dateStartInput.addEventListener('change', () => {
+      if (dateStartInput.value && !dateEndInput.value) dateEndInput.value = dateStartInput.value;
+    });
+
+    // Inicializar
+    fetchPosts();
+
+    // Enter en campo igUrl = agregar
+    igUrlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addBtn.click();
+    });
+
+  </script>
+</body>
+</html>
