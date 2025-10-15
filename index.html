@@ -437,7 +437,23 @@
       const year = d.getFullYear();
       return `${day}-${month}-${year}`;
     }
+    const backgrounds = [
+      'images/background1.jpg',
+      'images/background2.jpg',
+      'images/background3.jpg',
+      'images/background4.jpg',
+      'images/background5.jpg',
+      'images/background6.jpg'
+    ];
     
+    function cambiarVibra() {
+  // Elegir un índice al azar
+  const index = Math.floor(Math.random() * backgrounds.length);
+  const selectedBg = backgrounds[index];
+
+  // Aplicarlo al body
+  document.body.style.backgroundImage = `url('${selectedBg}')`;
+}
     // ---------- Fetch posts ----------
     async function fetchPosts() {
       try {
@@ -719,7 +735,10 @@
     igUrlInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') addBtn.click();
     });
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', cambiarVibra);
 
   </script>
 </body>
+
 </html>
